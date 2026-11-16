@@ -1,0 +1,162 @@
+"""
+=====================================================
+UNIT 5 DISCUSSION: SEARCH ALGORITHMS (LINEAR vs BINARY)
+=====================================================
+
+INSTRUCTIONS:
+In this assignment, you will implement and analyze two
+fundamental search algorithms: linear search and binary search.
+
+You will demonstrate your understanding by modifying the
+provided code, running experiments on different dataset sizes,
+and clearly explaining your results through code comments
+and program output.
+"""
+
+
+def linear_search(lst, target):
+    """
+    Implement a linear search algorithm.
+
+    Requirements:
+    - Search the list from beginning to end.
+    - Return the index if the target is found.
+    - Return -1 if the target is not found.
+    - Add comments explaining why linear search
+      has O(n) time complexity.
+    """
+    for i in range(len(lst)):
+        # Check each element sequentially
+        if lst[i] == target:
+            return i
+            
+    # Time Complexity: O(n)
+    # Explanation: In the worst-case scenario (when the target is at the 
+    # very end of the list or not present at all), linear search must inspect 
+    # every single element one by one. Therefore, the number of operations 
+    # grows directly in proportion to the input size (n).
+    return -1
+
+
+def binary_search(lst, target):
+    """
+    Implement a binary search algorithm.
+
+    Requirements:
+    - Assume the list is already sorted.
+    - Repeatedly reduce the search space by half.
+    - Return the index if the target is found.
+    - Return -1 if the target is not found.
+    - Add comments explaining how each iteration
+      reduces the search space.
+    """
+    low = 0
+    high = len(lst) - 1
+
+    while low <= high:
+        # Find the middle index
+        mid = (low + high) // 2
+
+        if lst[mid] == target:
+            return mid
+        elif lst[mid] < target:
+            # Target must be in the right half.
+            # Discard the left half and the current mid by moving 'low'.
+            low = mid + 1
+        else:
+            # Target must be in the left half.
+            # Discard the right half and the current mid by moving 'high'.
+            high = mid - 1
+
+    # Time Complexity: O(log n)
+    # Explanation: In each iteration, the algorithm compares the target to 
+    # the middle element and cuts the remaining search space in half. 
+    # This exponential halving means even massive datasets require very few steps.
+    return -1
+
+
+def main():
+    print("=== UNIT 5: SEARCH ALGORITHMS ===")
+
+    # ===============================
+    # SMALL DATASET TEST
+    # ===============================
+    print("\n=== SMALL DATASET TEST ===")
+    small_dataset = [12, 24, 36, 48, 60, 72, 84, 96]
+    target_existing = 72
+    target_missing = 50
+
+    print(f"Dataset: {small_dataset}")
+    
+    # Test existing value
+    lin_idx = linear_search(small_dataset, target_existing)
+    bin_idx = binary_search(small_dataset, target_existing)
+    print(f"Searching for existing value ({target_existing}):")
+    print(f"  Linear Search Index: {lin_idx}")
+    print(f"  Binary Search Index: {bin_idx}")
+
+    # Test missing value
+    lin_miss = linear_search(small_dataset, target_missing)
+    bin_miss = binary_search(small_dataset, target_missing)
+    print(f"Searching for missing value ({target_missing}):")
+    print(f"  Linear Search Index: {lin_miss} (Not Found)")
+    print(f"  Binary Search Index: {bin_miss} (Not Found)")
+
+
+    # ===============================
+    # LARGE DATASET TEST
+    # ===============================
+    print("\n=== LARGE DATASET TEST ===")
+    # Create a sorted dataset of 500,000 integers
+    large_dataset = list(range(0, 1_000_000, 2))
+    large_target = 999_996
+
+    print(f"Dataset Size: {len(large_dataset):,} elements")
+    print(f"Target: {large_target}")
+
+    # Comparing linear vs binary performance conceptually / via execution
+    import time
+
+    start_time = time.time()
+    lin_large = linear_search(large_dataset, large_target)
+    end_time = time.time()
+    print(f"Linear Search -> Found at index {lin_large} in {end_time - start_time:.6f} seconds")
+
+    start_time = time.time()
+    bin_large = binary_search(large_dataset, large_target)
+    end_time = time.time()
+    print(f"Binary Search -> Found at index {bin_large} in {end_time - start_time:.6f} seconds")
+    print("Explanation: Binary search is drastically faster on large datasets because "
+          "it eliminates half the remaining elements with every single comparison.")
+
+
+    # ===============================
+    # EDGE CASES
+    # ===============================
+    print("\n=== EDGE CASE TESTS ===")
+    
+    # Edge Case 1: Empty List
+    empty_list = []
+    print(1, "Empty List ([]):")
+    print(f"  Linear Result: {linear_search(empty_list, 42)}")
+    print(f"  Binary Result: {binary_search(empty_list, 42)}")
+
+    # Edge Case 2: Single-Element List (Found vs Missing)
+    single_list = [42]
+    print(2, "Single-Element List ([42]):")
+    print(f"  Search 42 -> Linear: {linear_search(single_list, 42)}, Binary: {binary_search(single_list, 42)}")
+    print(f"  Search 99 -> Linear: {linear_search(single_list, 99)}, Binary: {binary_search(single_list, 99)}")
+
+    # Edge Case 3: Target at First Position
+    print(3, "Target at First Position (12):")
+    print(f"  Linear Index: {linear_search(small_dataset, 12)}")
+    print(f"  Binary Index: {binary_search(small_dataset, 12)}")
+
+    # Edge Case 4: Target at Last Position
+    print(4, "Target at Last Position (96):")
+    print(f"  Linear Index: {linear_search(small_dataset, 96)}")
+    print(f"  Binary Index: {binary_search(small_dataset, 96)}")
+
+
+if __name__ == "__main__":
+    main()
