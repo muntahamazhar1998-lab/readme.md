@@ -1,4 +1,4 @@
-# readme.md
+# UNIT 5 DISCUSSION
 Comparison of Linear Search and Binary Search algorithms with performance analysis, edge case testing, and real-world applications.
 
 ## Unit 5 Discussion: Search Algorithms
